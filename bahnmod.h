@@ -39,14 +39,26 @@ void KoyuWatchy::drawBahn(int variant, float batt) {
 
   // draw battery
   #ifdef ARDUINO_ESP32S3_DEV
+  float battc = batt + 0.31;
+  if (battc > 1.00) {
+    battc = 1;
+  }
   display.fillRoundRect(16, 16, 34, 12, 4, (variant == 0) ? GxEPD_BLACK : GxEPD_WHITE);
   display.fillRoundRect(49, 20, 3, 4, 2, (variant == 0) ? GxEPD_BLACK : GxEPD_WHITE);
   display.fillRoundRect(18, 18, 30, 8, 3, (variant == 0) ? GxEPD_WHITE : GxEPD_BLACK);
-  if (batt > 0) {
-    display.fillRoundRect(20, 20, 26 * batt, 4, 2, (variant == 0) ? GxEPD_BLACK : GxEPD_WHITE);
+  if (battc > 0) {
+    display.fillRoundRect(20, 20, 26 * battc, 4, 2, (variant == 0) ? GxEPD_BLACK : GxEPD_WHITE);
   }
   if(USB_PLUGGED_IN){
     display.drawBitmap(56, 12, charge, 16, 18, (variant == 0) ? GxEPD_BLACK : GxEPD_WHITE);
+  } else {
+    display.setFont(&DIN_1451_Engschrift_Regular12pt7b);
+    int battp = battc * 100;
+    battp = (int)battp;
+    textstring = String(battp)+"%";
+    display.getTextBounds(textstring, 0, 0, &x1, &y1, &w, &h);
+    display.setCursor(56, 12 + h);
+    display.print(textstring);
   }
   #endif
   

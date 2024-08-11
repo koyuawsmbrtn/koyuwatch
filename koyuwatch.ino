@@ -2,7 +2,7 @@
 #include "main.h"
 #include "settings.h"
 
-WatchyBrain watchy(settings);
+KoyuWatchy watchy(settings);
 
 void setup() {
   //Serial.begin(115200);

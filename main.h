@@ -72,7 +72,7 @@ void KoyuWatchy::drawWatchFace() {
     }
     if (face == 1) {
       display.fillScreen(GxEPD_WHITE);
-      display.drawBitmap(0, 0, vcard, 200, 200, GxEPD_WHITE);
+      display.drawBitmap(0, 0, vcard, 200, 200, GxEPD_BLACK);
     }
   }
 }

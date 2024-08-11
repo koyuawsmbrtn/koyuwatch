@@ -4,6 +4,7 @@
 #include <Watchy.h>
 #include "vis.h"
 #include "vcard.h"
+#include "sadbun.h"
 
 RTC_DATA_ATTR int face = 0;
 RTC_DATA_ATTR int faces_vars[6][2] = {{1,0},{1,0},{1,0},{1,0},{2,0},{1,0}}; //variants, current
@@ -58,16 +59,21 @@ void KoyuWatchy::drawWatchFace() {
   }
 
   // ** GET BATTERY **
-  float batt = (getBatteryVoltage()-3.3);
-  if (batt > 1) { batt = 1; } else if (batt < 0) { batt = 0; }
+  float batt = (getBatteryVoltage() - 3.3);
+  if (batt > 1.00) { batt = 1; } else if (batt < 0) { batt = 0; }
   
-  if (face == 0) {
-    // ** DRAW WATCHFACE **
-    drawBahn(faces_vars[face][1], batt);
-  }
-  if (face == 1) {
+  if (batt < 0.1) {
     display.fillScreen(GxEPD_WHITE);
-    display.drawBitmap(0, 0, vcard, 200, 200, GxEPD_BLACK);
+    display.drawBitmap(0,0,sadbun,200,200,GxEPD_BLACK);
+  } else {
+    if (face == 0) {
+      // ** DRAW WATCHFACE **
+      drawBahn(faces_vars[face][1], batt);
+    }
+    if (face == 1) {
+      display.fillScreen(GxEPD_WHITE);
+      display.drawBitmap(0, 0, vcard, 200, 200, GxEPD_WHITE);
+    }
   }
 }
 

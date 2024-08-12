@@ -3,11 +3,13 @@
 
 #include <Watchy.h>
 #include "vis.h"
-#include "vcard.h"
+#include "qr.h"
 #include "sadbun.h"
+#include "revolut.h"
 
 RTC_DATA_ATTR int face = 0;
 RTC_DATA_ATTR int faces_vars[6][2] = {{1,0},{1,0},{1,0},{1,0},{2,0},{1,0}}; //variants, current
+int maxfaces = 2;
 
 class KoyuWatchy : public Watchy {
   using Watchy::Watchy;
@@ -28,13 +30,13 @@ void KoyuWatchy::handleButtonPress() {
     uint64_t wakeupBit = esp_sleep_get_ext1_wakeup_status();
     if (wakeupBit & UP_BTN_MASK) {
       face--;
-      if (face < 0 ) { face = 1; }
+      if (face < 0 ) { face = maxfaces; }
       RTC.read(currentTime);
       showWatchFace(false);
     }
     if (wakeupBit & DOWN_BTN_MASK) {
       face++;
-      if (face > 1 ) { face = 0; }
+      if (face > maxfaces ) { face = 0; }
       RTC.read(currentTime);
       showWatchFace(false);
     }
@@ -72,7 +74,11 @@ void KoyuWatchy::drawWatchFace() {
     }
     if (face == 1) {
       display.fillScreen(GxEPD_WHITE);
-      display.drawBitmap(0, 0, vcard, 200, 200, GxEPD_BLACK);
+      display.drawBitmap(0, 0, epd_bitmap_chart, 200, 200, GxEPD_BLACK);
+    }
+    if (face == 2) {
+      display.fillScreen(GxEPD_WHITE);
+      display.drawBitmap(0, 0, revolut_qr_code, 200, 200, GxEPD_BLACK);
     }
   }
 }

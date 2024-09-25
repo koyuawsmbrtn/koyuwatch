@@ -25,32 +25,35 @@ class KoyuWatchy : public Watchy {
 #include "bahnmod.h"
 
 void KoyuWatchy::handleButtonPress() {
-  if (guiState == WATCHFACE_STATE) {
-    //Up and Down switch watch faces
-    uint64_t wakeupBit = esp_sleep_get_ext1_wakeup_status();
-    if (wakeupBit & UP_BTN_MASK) {
-      face--;
-      if (face < 0 ) { face = maxfaces; }
-      RTC.read(currentTime);
-      showWatchFace(false);
-    }
-    if (wakeupBit & DOWN_BTN_MASK) {
-      face++;
-      if (face > maxfaces ) { face = 0; }
-      RTC.read(currentTime);
-      showWatchFace(false);
-    }
-    if (wakeupBit & BACK_BTN_MASK) {
-      face = 0;
-      RTC.read(currentTime);
-      showWatchFace(false);
-      return;
-    }
-    if (wakeupBit & MENU_BTN_MASK) {
-      Watchy::handleButtonPress();
-      return;
-    }
-  } else {Watchy::handleButtonPress();}
+  // Only handle button presses when battery is full
+  if (batt > 0.1) {
+    if (guiState == WATCHFACE_STATE) {
+      //Up and Down switch watch faces
+      uint64_t wakeupBit = esp_sleep_get_ext1_wakeup_status();
+      if (wakeupBit & UP_BTN_MASK) {
+        face--;
+        if (face < 0 ) { face = maxfaces; }
+        RTC.read(currentTime);
+        showWatchFace(false);
+      }
+      if (wakeupBit & DOWN_BTN_MASK) {
+        face++;
+        if (face > maxfaces ) { face = 0; }
+        RTC.read(currentTime);
+        showWatchFace(false);
+      }
+      if (wakeupBit & BACK_BTN_MASK) {
+        face = 0;
+        RTC.read(currentTime);
+        showWatchFace(false);
+        return;
+      }
+      if (wakeupBit & MENU_BTN_MASK) {
+        Watchy::handleButtonPress();
+        return;
+      }
+    } else {Watchy::handleButtonPress();}
+  }
 }
 
 void KoyuWatchy::drawWatchFace() {

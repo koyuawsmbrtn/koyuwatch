@@ -26,6 +26,8 @@ class KoyuWatchy : public Watchy {
 
 void KoyuWatchy::handleButtonPress() {
   // Only handle button presses when battery is full
+  float batt = (getBatteryVoltage() - 3.3);
+  if (batt > 1.00) { batt = 1; } else if (batt < 0) { batt = 0; }
   if (batt > 0.1) {
     if (guiState == WATCHFACE_STATE) {
       //Up and Down switch watch faces
